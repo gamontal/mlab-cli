@@ -1,0 +1,30 @@
+{
+  "name": "mlab-cli",
+  "version": "1.0.0",
+  "description": "A CLI for mLab written in Javascript",
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gmontalvoriv/mlab-cli.git"
+  },
+  "keywords": [
+    "mlab",
+    "mongodb",
+    "cli",
+    "database"
+  ],
+  "author": "Gabriel Montalvo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gmontalvoriv/mlab-cli/issues"
+  },
+  "homepage": "https://github.com/gmontalvoriv/mlab-cli#readme",
+  "dependencies": {
+    "js-yaml": "^3.5.3",
+    "mongolab-data-api": "^1.1.4",
+    "vorpal": "^1.10.8"
+  }
+}
