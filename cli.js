@@ -1,12 +1,8 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var cli = require('vorpal')();
-var Spinner = require('cli-spinner').Spinner;
 var mLabAPI = require('mongolab-data-api');
 var mLab, db;
-
-var spinner = new Spinner('fetching data.. %s');
-spinner.setSpinnerString('|/-\\');
 
 var ERRORS = ['Error: account unauthorized, please provide a valid API key.',
               'Error: database not set',
@@ -25,7 +21,6 @@ cli
   .command('authorize <key>', 'set a new mLab account key')
   .action(function (args, cb) {
     try {
-
       mLab = mLabAPI((args.key).toString());
 
       fs.writeFile('./.mlabrc.yml', args.key, function(err) {
