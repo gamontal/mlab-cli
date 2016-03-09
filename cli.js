@@ -22,7 +22,7 @@ var getApiKey = function () {
 }();
 
 cli
-  .command('authorize <key>', 'sets a new mLab account key')
+  .command('authorize <key>', 'set a new mLab account key')
   .action(function (args, cb) {
     try {
 
@@ -206,8 +206,8 @@ cli
       name: 'continue',
       default: false,
       message: 'Warning: Are you sure that you want to permanently delete this data?',
-    }, function (result) {
-      if (!result.continue) {
+    }, function (res) {
+      if (!res.continue) {
         self.log('Aborting task...');
       } else {
         var opts = {
