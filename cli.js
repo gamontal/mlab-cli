@@ -4,7 +4,11 @@ var cli = require('vorpal')();
 var mLabAPI = require('mongolab-data-api');
 var mLab, db;
 
-var getApiKey = function() {
+var ERRORS = ['Error: account unauthorized, please provide a valid API key.',
+              'Error: database not set',
+              'Error: invalid file type'];
+
+var getApiKey = function () {
   try {
     var key = yaml.safeLoad(fs.readFileSync('./.mlabrc.yml', 'utf8'));
     mLab = mLabAPI(key.toString());
@@ -30,7 +34,7 @@ cli
         }
       });
     } catch (e) {
-      console.log('Account unauthorized, please provide a valid API key.');
+      console.log(ERRORS[0]);
       cb();
     }
   });
@@ -59,7 +63,7 @@ cli
         }
       });
     } catch (e) {
-      console.log('Account unauthorized, please provide a valid API key.');
+      console.log(ERRORS[0]);
       cb();
     }
   });
@@ -67,12 +71,20 @@ cli
 cli
   .command('show databases', 'show database names')
   .action(function (args, cb) {
-    mLab.listDatabases(function (err, databases) {
-      if (err) { this.log(err); }
+    try {
+      mLab.listDatabases(function (err, databases) {
+        if (err) {
+          console.log(err);
+          cb();
+        }
 
-      console.log(databases.join('\n'));
+        console.log(databases.join('\n'));
+        cb();
+      });
+    } catch (e) {
+      console.log(ERRORS[1]);
       cb();
-    });
+    }
   });
 
 cli
@@ -82,11 +94,16 @@ cli
       mLab.listCollections(db, function (err, collections) {
         if (err) { console.log(err); }
 
+        var SYS_INDEX = collections.indexOf('system.indexes'); // removes system.indexes from the list
+        if (SYS_INDEX > -1) {
+          collections.splice(SYS_INDEX, 1);
+        }
+
         console.log(collections.join('\n'));
         cb();
       });
     } catch (e) {
-      console.log('Error: database not set');
+      console.log(ERRORS[1]);
       cb();
     }
   });
@@ -113,19 +130,24 @@ cli
       limit: args.options.limit
     };
 
-    mLab.listDocuments(opts, function (err, documents) {
-      if (err) {
-        console.log('Error: database not set');
-        cb();
-      } else {
-        if (documents.message) {
-          console.log(documents.message + '\nMake sure to surround your payload data with quotes (\'\')');
+    try {
+      mLab.listDocuments(opts, function (err, documents) {
+        if (err) {
+          console.log(ERRORS[1]);
+          cb();
         } else {
-          console.log(JSON.stringify(documents, 2, 2));
+          if (documents.message) {
+            console.log(documents.message + '\nMake sure to surround your payload data with quotes (\'\')');
+          } else {
+            console.log(JSON.stringify(documents, 2, 2));
+          }
+          cb();
         }
-        cb();
-      }
-    });
+      });
+    } catch (e) {
+      console.log(ERRORS[1]);
+      cb();
+    }
   });
 
 cli
@@ -150,7 +172,7 @@ cli
           });
       });
     } else {
-      console.log('Error: invalid file type');
+      console.log(ERRORS[2]);
       cb();
     }
   });
@@ -172,7 +194,7 @@ cli
 
     mLab.updateDocuments(opts, function (err, result) {
       if (err) {
-        console.log('Error: database not set');
+        console.log(ERRORS[1]);
         cb();
       } else {
         console.log(result.n + ' document(s) updated');
@@ -205,7 +227,7 @@ cli
 
         mLab.deleteDocuments(opts, function (err, result) {
           if (err) {
-            console.log('Error: database not set');
+            console.log(ERRORS[1]);
             cb();
           } else {
 
@@ -230,7 +252,7 @@ cli
     try {
       mLab.runCommand({ database: db, commands: eval('({' + command.toString() + '})') }, function (err, result) {
         if (err) {
-          console.log('Error: database not set');
+          console.log(ERRORS[1]);
           cb();
         } else {
           if (result.message) {
