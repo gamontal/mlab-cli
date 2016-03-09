@@ -1,8 +1,12 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var cli = require('vorpal')();
+var Spinner = require('cli-spinner').Spinner;
 var mLabAPI = require('mongolab-data-api');
 var mLab, db;
+
+var spinner = new Spinner('fetching data.. %s');
+spinner.setSpinnerString('|/-\\');
 
 var ERRORS = ['Error: account unauthorized, please provide a valid API key.',
               'Error: database not set',
@@ -27,16 +31,14 @@ cli
       fs.writeFile('./.mlabrc.yml', args.key, function(err) {
         if (err) {
           console.log(err);
-          cb();
         } else {
           console.log('A new Data API key has been set.');
-          cb();
         }
       });
     } catch (e) {
       console.log(ERRORS[0]);
-      cb();
     }
+    cb();
   });
 
 cli
@@ -54,18 +56,15 @@ cli
 
         if (exists) {
           db = args.database;
-
           console.log('switched to db ' + db);
-          cb();
         } else if (!exists) {
           console.log('database <' + args.database + '> does not exist');
-          cb();
         }
       });
     } catch (e) {
       console.log(ERRORS[0]);
-      cb();
     }
+    cb();
   });
 
 cli
@@ -75,16 +74,14 @@ cli
       mLab.listDatabases(function (err, databases) {
         if (err) {
           console.log(err);
-          cb();
+        } else {
+          console.log(databases.join('\n'));
         }
-
-        console.log(databases.join('\n'));
-        cb();
       });
     } catch (e) {
       console.log(ERRORS[1]);
-      cb();
     }
+    cb();
   });
 
 cli
@@ -92,20 +89,21 @@ cli
   .action(function (args, cb) {
     try {
       mLab.listCollections(db, function (err, collections) {
-        if (err) { console.log(err); }
+        if (err) {
+          console.log(err);
+        } else {
+          var SYS_INDEX = collections.indexOf('system.indexes'); // removes system.indexes from the list
+          if (SYS_INDEX > -1) {
+            collections.splice(SYS_INDEX, 1);
+          }
 
-        var SYS_INDEX = collections.indexOf('system.indexes'); // removes system.indexes from the list
-        if (SYS_INDEX > -1) {
-          collections.splice(SYS_INDEX, 1);
+          console.log(collections.join('\n'));
         }
-
-        console.log(collections.join('\n'));
-        cb();
       });
     } catch (e) {
       console.log(ERRORS[1]);
-      cb();
     }
+    cb();
   });
 
 cli
@@ -134,20 +132,18 @@ cli
       mLab.listDocuments(opts, function (err, documents) {
         if (err) {
           console.log(ERRORS[1]);
-          cb();
         } else {
           if (documents.message) {
             console.log(documents.message + '\nMake sure to surround your payload data with quotes (\'\')');
           } else {
             console.log(JSON.stringify(documents, 2, 2));
           }
-          cb();
         }
       });
     } catch (e) {
       console.log(ERRORS[1]);
-      cb();
     }
+    cb();
   });
 
 cli
@@ -156,7 +152,7 @@ cli
   .action(function (args, cb) {
     if (args.file.indexOf('.json') > -1) {
       fs.readFile(args.file, 'utf-8', function (err, data) {
-        if (err) throw err;
+        if (err) { throw err; }
 
         mLab.insertDocuments({
           database: db,
@@ -164,17 +160,15 @@ cli
           documents: JSON.parse(data) }, function (err, result) {
             if (err) {
               console.log('Error: database not set');
-              cb();
             } else {
               console.log(result.n + ' document(s) added');
-              cb();
             }
           });
       });
     } else {
       console.log(ERRORS[2]);
-      cb();
     }
+    cb();
   });
 
 cli
@@ -195,12 +189,11 @@ cli
     mLab.updateDocuments(opts, function (err, result) {
       if (err) {
         console.log(ERRORS[1]);
-        cb();
       } else {
         console.log(result.n + ' document(s) updated');
-        cb();
       }
     });
+    cb();
   });
 
 cli
@@ -216,7 +209,6 @@ cli
     }, function (result) {
       if (!result.continue) {
         self.log('Aborting task...');
-        cb();
       } else {
         var opts = {
           database: db,
@@ -228,7 +220,6 @@ cli
         mLab.deleteDocuments(opts, function (err, result) {
           if (err) {
             console.log(ERRORS[1]);
-            cb();
           } else {
 
             if (result.message) {
@@ -236,37 +227,34 @@ cli
             } else {
               console.log(result.removed + ' document(s) deleted');
             }
-
-            cb();
           }
         });
       }
+      cb();
     });
   });
 
 cli
   .mode('db')
-  .description('Run MongoDB database commands')
+  .description('run MongoDB database commands')
   .delimiter('~ db:')
   .action(function (command, cb) {
     try {
       mLab.runCommand({ database: db, commands: eval('({' + command.toString() + '})') }, function (err, result) {
         if (err) {
           console.log(ERRORS[1]);
-          cb();
         } else {
           if (result.message) {
             console.log(result.message);
           } else {
             console.log(result);
           }
-          cb();
         }
       });
     } catch (e) {
-      console.log('The command you are trying to run, is invalid or unsupported.');
-      cb();
+      console.log('The command you are trying to run is invalid or unsupported.');
     }
+    cb();
   });
 
 cli
