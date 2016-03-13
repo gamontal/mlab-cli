@@ -8,6 +8,10 @@ var ERRORS = ['Error: account unauthorized, please provide a valid API key.',
               'Error: database not set',
               'Error: invalid file type'];
 
+var dbCommands = ['getLastError', 'getPrevError', 'ping', 'profile', 'repairDatabase', 'resetError',
+                'whatsmyuri', 'convertToCapped', 'distinct', 'findAndModify', 'geoNear', 'reIndex',
+                'collStats', 'dbStats'];
+
 var getApiKey = function () {
   try {
     var key = yaml.safeLoad(fs.readFileSync('./.mlabrc.yml', 'utf8'));
@@ -233,21 +237,30 @@ cli
   .mode('db')
   .description('run MongoDB database commands')
   .delimiter('~ db:')
+  .init(function(args, cb) {
+    this.log('You can now directly enter arbitrary MongoDB commands. To exit, type `exit`.\n\n' +
+             'Supported commands:\n\n' + dbCommands.join('\n') + '\n');
+    cb();
+  })
   .action(function (command, cb) {
-    try {
-      mLab.runCommand({ database: db, commands: eval('({' + command.toString() + '})') }, function (err, result) {
-        if (err) {
-          console.log(ERRORS[1]);
-        } else {
-          if (result.message) {
-            console.log(result.message);
+    if (command === 'help') {
+      this.log('\nSupported commands:\n\n' + dbCommands.join('\n') + '\n');
+    } else {
+      try {
+        mLab.runCommand({ database: db, commands: eval('({' + command.toString() + '})') }, function (err, result) {
+          if (err) {
+            console.log(ERRORS[1]);
           } else {
-            console.log(result);
+            if (result.message) {
+              console.log(result.message);
+            } else {
+              console.log(result);
+            }
           }
-        }
-      });
-    } catch (e) {
-      console.log('The command you are trying to run is invalid or unsupported.');
+        });
+      } catch (e) {
+        console.log('The command you are trying to run is invalid or unsupported.');
+      }
     }
     cb();
   });
