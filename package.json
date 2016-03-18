@@ -6,6 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "main": "cli.js",
+  "bin": {
+    "mlab": "cli.js"
+  },
+  "files": [
+    "*.yml"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gmontalvoriv/mlab-cli.git"
@@ -22,6 +29,7 @@
     "url": "https://github.com/gmontalvoriv/mlab-cli/issues"
   },
   "homepage": "https://github.com/gmontalvoriv/mlab-cli#readme",
+  "preferGlobal": true,
   "dependencies": {
     "js-yaml": "^3.5.3",
     "mongolab-data-api": "^1.1.4",

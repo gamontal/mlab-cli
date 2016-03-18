@@ -13,6 +13,8 @@ var dbCommands = ['getLastError', 'getPrevError', 'ping', 'profile', 'repairData
                 'collStats', 'dbStats'];
 
 var getApiKey = function () {
+  // TODO create .mlabrc file if it doesn't exist
+
   try {
     var key = yaml.safeLoad(fs.readFileSync('./.mlabrc.yml', 'utf8'));
     mLab = mLabAPI(key.toString());
@@ -67,7 +69,8 @@ cli
   });
 
 cli
-  .command('show databases', 'show database names')
+  .command('show dbs', 'show database names')
+  .alias('show databases')
   .action(function (args, cb) {
     try {
       mLab.listDatabases(function (err, databases) {
@@ -238,8 +241,8 @@ cli
   .description('run MongoDB database commands')
   .delimiter('~ db:')
   .init(function(args, cb) {
-    this.log('You can now directly enter arbitrary MongoDB commands. To exit, type `exit`.\n\n' +
-             'Supported commands:\n\n' + dbCommands.join('\n') + '\n');
+    this.log('\nYou can now directly enter arbitrary MongoDB commands. To exit, type `exit`.\n\n' +
+             'Supported commands:\n\n - ' + dbCommands.join('\n - ') + '\n');
     cb();
   })
   .action(function (command, cb) {
@@ -266,7 +269,7 @@ cli
   });
 
 cli
-  .log('mLab CLI version: ' + require('./package').version)
+  .log('mLab CLI version: ' + require('./package').version + '\n')
   .delimiter('>')
   .show();
 
