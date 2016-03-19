@@ -4,7 +4,7 @@
 
 #### A command-line power tool for mLab (PKA MongoLab).
 
-The CLI aims to speed up some basic database management operations for your mLab account.
+```mlab-cli``` aims to speed up some basic database management operations for your [mLab](https://mlab.com/) account.
 
 ## Dependencies
 
@@ -49,7 +49,7 @@ Once you've enabled an API key for your account use the ```authorize``` command 
  
 ## Usage Example
 
-Typing ```help``` will list all the available commands. You can type help TASK to get help for a specific command.
+Typing ```help``` will list all the available commands. You can type ```help TASK``` to get help for a specific command.
 
 ```
 $ mlab
