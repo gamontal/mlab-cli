@@ -63,7 +63,7 @@ mLab CLI version: x.x.x
 > show dbs
 exampledb1
 exampledb2
-
+...
 ```
 
 #### Set database
@@ -75,8 +75,9 @@ switched to db exampledb1
 #### Show collections
 ```
 > show collections
-coll1
-coll2
+users
+locations
+...
 ```
 
 #### Find documents
