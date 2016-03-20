@@ -58,6 +58,60 @@ mLab CLI version: x.x.x
 > help
 ```
 
+#### Show databases
+```
+> show dbs
+exampledb1
+exampledb2
+
+```
+
+#### Set database
+```
+> use exampledb1
+switched to db exampledb1
+```
+
+#### Show collections
+```
+> show collections
+coll1
+coll2
+```
+
+#### Find documents
+```
+> find users
+[{
+   "_id": 56e3001a76517d7d05122b1b,
+   "name": "user1",
+   "active": true
+}, 
+{
+   "_id": 56e3001a76517d7d05333b3b,
+   "name": "user2",
+   "active": false
+}]
+```
+
+#### Return all documents with "active" field of true
+```
+> find -q '{"active": true}' users
+[{
+   "_id": 56e3001a76517d7d05122b1b,
+   "name": "user1",
+   "active": true
+}]
+```
+
+## Disclaimer
+
+I wrote this utility for my own convenience. I think that others might find it useful as well. Also, I am not responsible for any misuse or damage that may arise from the use of your database information presented through this tool.
+
+## Related
+
+- [mongolab-data-api](https://github.com/gmontalvoriv/mongolab-data-api): A NodeJS wrapper for mLab’s Data API
+
 ## License
 
 [MIT](https://github.com/gmontalvoriv/mlab-cli/blob/master/LICENSE) © Gabriel Montalvo
