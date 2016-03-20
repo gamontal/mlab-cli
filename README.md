@@ -85,12 +85,12 @@ locations
 > find users
 [{
    "_id": 56e3001a76517d7d05122b1b,
-   "name": "user1",
+   "username": "user1",
    "active": true
 }, 
 {
    "_id": 56e3001a76517d7d05333b3b,
-   "name": "user2",
+   "username": "user2",
    "active": false
 }]
 ```
@@ -100,9 +100,34 @@ locations
 > find -q '{"active": true}' users
 [{
    "_id": 56e3001a76517d7d05122b1b,
-   "name": "user1",
+   "username": "user1",
    "active": true
 }]
+```
+
+#### Create new documents
+```
+> insert users testDocs.json
+x document(s) added
+```
+
+#### Update one or more documents
+```
+> update -q '{"username": "user1"}' '{"active": false}' users
+1 document(s) updated
+```
+
+#### Delete one or more documents
+```
+> delete -q '{"username": "user2"}' users
+1 document(s) deleted
+```
+
+#### Run MongoDB database commands
+```
+> db
+> ~ db: ping:1
+{ serverUsed: 'ds123456-a.mlab.com:12345', ok: 1 }
 ```
 
 ## Disclaimer
