@@ -31,8 +31,8 @@
   "homepage": "https://github.com/gmontalvoriv/mlab-cli#readme",
   "preferGlobal": true,
   "dependencies": {
-    "js-yaml": "^3.5.3",
+    "js-yaml": "3.5.3",
     "mongolab-data-api": "^1.1.4",
-    "vorpal": "^1.10.8"
+    "vorpal": "1.10.8"
   }
 }

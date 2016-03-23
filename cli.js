@@ -13,7 +13,16 @@ var dbCommands = ['getLastError', 'getPrevError', 'ping', 'profile', 'repairData
                 'collStats', 'dbStats'];
 
 var getApiKey = function () {
-  // TODO create .mlabrc file if it doesn't exist
+  // make sure the configuration file exists
+  fs.stat('./.mlabrc.yml', function (err, stat) {
+    if (err == null) {
+      return;
+    } else if (err.code == 'ENOENT') {
+      fs.writeFile('./.mlabrc.yml');
+    } else {
+      console.log('Unexpected error: ', err.code);
+    }
+  });
 
   try {
     var key = yaml.safeLoad(fs.readFileSync('./.mlabrc.yml', 'utf8'));
