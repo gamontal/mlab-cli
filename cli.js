@@ -15,7 +15,7 @@ var dbCommands = ['getLastError', 'getPrevError', 'ping', 'profile', 'repairData
 var getApiKey = function () {
   // make sure the configuration file exists
   fs.stat('./.mlabrc.yml', function (err, stat) {
-    if (err == null) {
+    if (err === null) {
       return;
     } else if (err.code == 'ENOENT') {
       fs.writeFile('./.mlabrc.yml');
@@ -211,7 +211,7 @@ cli
   .command('delete <collectionName>', 'delete one or more documents in the specified collection\n')
   .option('-q, --query <string>', 'only delete the document(s) matching the specified JSON query')
   .action(function (args, cb) {
-    const self = this;
+    var self = this;
     this.prompt({
       type: 'confirm',
       name: 'continue',
