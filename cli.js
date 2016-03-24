@@ -14,20 +14,26 @@ var dbCommands = ['getLastError', 'getPrevError', 'ping', 'profile', 'repairData
                 'whatsmyuri', 'convertToCapped', 'distinct', 'findAndModify', 'geoNear', 'reIndex',
                 'collStats', 'dbStats'];
 
+function getUserHome () {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
+var CONFIG_FILE = getUserHome() + '/.mlabrc.yml';
+
 var getApiKey = function () {
   // make sure the configuration file exists
-  fs.stat('./.mlabrc.yml', function (err, stat) {
+  fs.stat(CONFIG_FILE, function (err, stat) {
     if (err === null) {
       return;
     } else if (err.code == 'ENOENT') {
-      fs.writeFile('./.mlabrc.yml');
+      fs.writeFile(CONFIG_FILE);
     } else {
       console.log('Unexpected error: ', err.code);
     }
   });
 
   try {
-    var key = yaml.safeLoad(fs.readFileSync('./.mlabrc.yml', 'utf8'));
+    var key = yaml.safeLoad(fs.readFileSync(CONFIG_FILE, 'utf8'));
     mLab = mLabAPI(key.toString());
   } catch (e) {
     console.log('Type \"authorize\" and provide your API key to authorize your mLab account.');
@@ -40,7 +46,7 @@ cli
     try {
       mLab = mLabAPI((args.key).toString());
 
-      fs.writeFile('./.mlabrc.yml', args.key, function(err) {
+      fs.writeFile(CONFIG_FILE, args.key, function(err) {
         if (err) {
           console.log(err);
         } else {
