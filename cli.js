@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var fs = require('fs');
 var yaml = require('js-yaml');
 var cli = require('vorpal')();
