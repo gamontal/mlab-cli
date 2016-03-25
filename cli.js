@@ -129,7 +129,7 @@ cli
   .command('find <collectionName>', 'find documents in the specified collection')
   .option('-q, --query <string>', 'restrict results by the specified JSON query')
   .option('-c, --resultCount', 'return the result count for query')
-  .option('--setFields <number>', 'specify the set of fields to include or exclude in each document (1 - include; 0 - exclude)')
+  .option('--setFields <string>', 'specify the set of fields to include or exclude in each document (1 - include; 0 - exclude)')
   .option('-o, --findOne', 'return a single document from the result set')
   .option('--sortOrder <string>', 'specify the order in which to sort each specified field (1- ascending; -1 - descending)')
   .option('-s, --skipResults <number>', 'number of documents to skip')
