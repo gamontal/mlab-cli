@@ -107,7 +107,13 @@ locations
 
 #### Create new documents
 ```
-> insert users testDocs.json
+> insert users '[{"username": "newUser", "active": false}]'
+x document(s) added
+```
+
+#### Import new documents stored in a .json file
+```
+> import users example.json
 x document(s) added
 ```
 
