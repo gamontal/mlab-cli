@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var yaml = require('js-yaml');
+var chalk = require('chalk');
 var cli = require('vorpal')();
 var mLabAPI = require('mongolab-data-api');
 var mLab, db;
@@ -74,7 +75,10 @@ cli
 
         if (exists) {
           db = args.database;
-          console.log('switched to db ' + db);
+
+          mLab.runCommand({ database: db, commands: { ping: 1 } }, function (err, results) {
+            console.log('switched to db ' + db + ' (Server: ' + results.serverUsed + ')');
+          });
         } else if (!exists) {
           console.log('database <' + args.database + '> does not exist');
         }
@@ -258,8 +262,8 @@ cli
   .description('run MongoDB database commands')
   .delimiter('~ db:')
   .init(function(args, cb) {
-    this.log('\nYou can now directly enter arbitrary MongoDB commands. To exit, type `exit`.\n\n' +
-             'Supported commands:\n\n - ' + dbCommands.join('\n - ') + '\n');
+    this.log('\nYou can now directly enter arbitrary MongoDB commands. To exit, type `exit`.\n' +
+             'To see the full list of supported commands, type `help`.\n\n');
     cb();
   })
   .action(function (command, cb) {
@@ -286,7 +290,7 @@ cli
   });
 
 cli
-  .log('mLab CLI version: ' + require('./package').version + '\n')
+  .log(chalk.green('mLab CLI version: ') + require('./package').version + '\n')
   .delimiter('>')
   .show();
 
