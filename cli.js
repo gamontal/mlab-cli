@@ -170,8 +170,25 @@ cli
   });
 
 cli
-  .command('insert <collectionName> <file>',
-           'create new document(s) in the specified collection (takes a .json file containing the document(s) inside an array)')
+  .command('insert <collectionName> <documents>',
+           'create a new document or array of documents in the specified collection')
+  .action(function (args, cb) {
+    mLab.insertDocuments({
+      database: db,
+      collectionName: args.collectionName,
+      documents: JSON.parse(args.documents) }, function (err, result) {
+        if (err) {
+          console.log('Error: database not set');
+        } else {
+          console.log(result.n + ' document(s) added');
+        }
+      });
+    cb();
+  });
+
+cli
+  .command('import <collectionName> <file>',
+           'import new document(s) in the specified collection (takes a .json file containing the document(s) inside an array)')
   .action(function (args, cb) {
     if (args.file.indexOf('.json') > -1) {
       fs.readFile(args.file, 'utf-8', function (err, data) {
