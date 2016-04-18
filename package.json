@@ -33,6 +33,7 @@
     "chalk": "^1.1.3",
     "js-yaml": "3.5.3",
     "mongolab-data-api": "^1.1.4",
+    "pretty-bytes": "^3.0.1",
     "vorpal": "1.10.8"
   }
 }

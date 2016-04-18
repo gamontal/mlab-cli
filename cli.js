@@ -3,8 +3,10 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var chalk = require('chalk');
+var pb = require('pretty-bytes');
 var cli = require('vorpal')();
 var mLabAPI = require('mongolab-data-api');
+
 var mLab, db;
 
 var ERRORS = ['Error: account unauthorized, please provide a valid API key.',
@@ -94,14 +96,24 @@ cli
   .alias('show databases')
   .action(function (args, cb) {
     try {
-      mLab.listDatabases(function (err, databases) {
+      mLab.listDatabases(function (err, results) {
         if (err) {
           console.log(err);
         } else {
-          console.log(databases.join('\n'));
+          var databases = results;
+          var out = [];
+
+          databases.forEach(function (key, index) {
+            mLab.runCommand({ database: key, commands: { dbStats: 1 } }, function (err, dbStats) {
+              out.push(dbStats.db + '\t(' + pb(dbStats.storageSize) + ')');
+            });
+          });
+
+          console.log(out.join('\n'));
         }
       });
     } catch (e) {
+      console.log(e);
       console.log(ERRORS[1]);
     }
     cb();
@@ -115,11 +127,6 @@ cli
         if (err) {
           console.log(err);
         } else {
-          var SYS_INDEX = collections.indexOf('system.indexes'); // removes system.indexes from the list
-          if (SYS_INDEX > -1) {
-            collections.splice(SYS_INDEX, 1);
-          }
-
           console.log(collections.join('\n'));
         }
       });
@@ -295,7 +302,7 @@ cli
             if (result.message) {
               console.log(result.message);
             } else {
-              console.log(result);
+              console.log(JSON.stringify(result, 2, 2));
             }
           }
         });
