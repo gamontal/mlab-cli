@@ -24,6 +24,7 @@ function getUserHome () {
 var CONFIG_FILE = getUserHome() + '/.mlabrc.yml';
 
 var getApiKey = function () {
+
   // make sure the configuration file exists
   fs.stat(CONFIG_FILE, function (err, stat) {
     if (err === null) {
@@ -79,7 +80,8 @@ cli
           db = args.database;
 
           mLab.runCommand({ database: db, commands: { ping: 1 } }, function (err, results) {
-            console.log('switched to db ' + db + ' (Server: ' + results.serverUsed + ')');
+            console.log('switched to db ' + db);
+            results.serverUsed ? console.log(' (Server: ' + results.serverUsed + ')') : console.log('Unable to fetch server information at the moment...');
           });
         } else if (!exists) {
           console.log('database <' + args.database + '> does not exist');
