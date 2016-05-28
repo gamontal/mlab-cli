@@ -13,16 +13,20 @@ var ERRORS = ['Error: account unauthorized, please provide a valid API key.',
               'Error: database not set',
               'Error: invalid file type'];
 
+// Currently supported database commands
 var dbCommands = ['getLastError', 'getPrevError', 'ping', 'profile', 'repairDatabase', 'resetError',
                 'whatsmyuri', 'convertToCapped', 'distinct', 'findAndModify', 'geoNear', 'reIndex',
                 'collStats', 'dbStats'];
 
+// Get the user's home directory
 function getUserHome () {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
+// Fetch the configuration file
 var CONFIG_FILE = getUserHome() + '/.mlabrc.yml';
 
+// Validate the user's API key and set it for the current session
 var getApiKey = function () {
 
   // make sure the configuration file exists
@@ -43,6 +47,8 @@ var getApiKey = function () {
     console.log('Type \"authorize\" and provide your API key to authorize your mLab account.');
   }
 }();
+
+/* mlab-cli Commands */
 
 cli
   .command('authorize <key>', 'set a new mLab account key')
@@ -187,7 +193,7 @@ cli
       collectionName: args.collectionName,
       documents: JSON.parse(args.documents) }, function (err, result) {
         if (err) {
-          console.log('Error: database not set');
+          console.log(ERRORS[1]);
         } else {
           console.log(result.n + ' document(s) added');
         }
@@ -208,7 +214,7 @@ cli
           collectionName: args.collectionName,
           documents: JSON.parse(data) }, function (err, result) {
             if (err) {
-              console.log('Error: database not set');
+              console.log(ERRORS[1]);
             } else {
               console.log(result.n + ' document(s) added');
             }
