@@ -1,3 +1,5 @@
+## ⚠️ This repository is no longer maintained.
+
 # mLab CLI
 [![npm version](https://img.shields.io/npm/v/mlab-cli.svg?style=flat)](https://www.npmjs.com/package/mlab-cli)
 [![Dependency Status](https://david-dm.org/gmontalvoriv/mlab-cli.svg)](https://www.npmjs.com/package/mlab-cli) [![Gitter](https://badges.gitter.im/gmontalvoriv/mlab-cli.svg)](https://gitter.im/gmontalvoriv/mlab-cli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
